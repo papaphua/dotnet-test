@@ -3,7 +3,7 @@
 
 ####  Fix existing unit tests:
 
-- Ensure that all existing tests in the class `TestTask.API.Tests.PurchaseTests.cs` are successful.
+- Please fix the issue in the `TestTask.API.Tests.PurchaseTests.cs.BuyAsync_ShouldHandleConcurrentPurchases` test without modifying the test itself.
 
 #### 'Report' Task:
 Enhance an existing application by modifying its data models and creating an API endpoint to generate a specific report.
