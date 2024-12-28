@@ -23,10 +23,8 @@ public class MarketService
             throw new Exception("Item not found");
 
         if (user.Balance < item.Cost)
-        {
             if (item == null)
                 throw new Exception("Not enough balance");
-        }
 
         user.Balance -= item.Cost;
         await _testDbContext.UserItems.AddAsync(new UserItem
@@ -36,5 +34,38 @@ public class MarketService
         });
 
         await _testDbContext.SaveChangesAsync();
+    }
+
+    public async Task<List<PopularItemDto>> GetPopularItemsAsync()
+    {
+        var query = await _testDbContext.UserItems
+            .GroupBy(x => new
+            {
+                x.UserId,
+                x.ItemId,
+                x.Item!.Name,
+                x.PurchaseDate.Date
+            })
+            .Select(x => new
+            {
+                x.Key.Date.Year,
+                x.Key.Name,
+                TimesBoughtInMostPopularDay = x.Count()
+            })
+            .GroupBy(x => x.Year)
+            .Select(x => x
+                .OrderByDescending(c => c.TimesBoughtInMostPopularDay)
+                .Take(3))
+            .ToListAsync();
+
+        return query
+            .SelectMany(x => x)
+            .OrderByDescending(x => x.Year)
+            .ThenBy(x => x.TimesBoughtInMostPopularDay)
+            .Select(x => new PopularItemDto(
+                x.Year,
+                x.Name,
+                x.TimesBoughtInMostPopularDay))
+            .ToList();
     }
 }

@@ -19,4 +19,10 @@ public class MarketController : ControllerBase
     {
         await _marketService.BuyAsync(userId, itemId);
     }
+
+    [HttpGet]
+    public async Task<List<PopularItemDto>> GetPopularItemsAsync()
+    {
+        return await _marketService.GetPopularItemsAsync();
+    }
 }
